@@ -49,9 +49,7 @@ int	main(int	argc, char **argv)
 		vec.push_back(ft::stoi(static_cast<str>(argv[i])));
 		i++;
 	}
-	std::vector<int>::iterator begin = vec.begin();
-	std::vector<int>::iterator end = vec.end();
-		try{
+	try{
 			easyfind(vec, ft::stoi(static_cast<str>(argv[argc - 1])));
 			std::cout << "OK" << std::endl;
 		}
