@@ -1,65 +1,69 @@
-#include "./Span.hpp"
+#include "Span.hpp"
+#include <exception>
 #include <cstdlib>
+#include <iterator>
+#include <algorithm>
 #include <iostream>
-typedef std::string str;
-typedef std::vector<int>::iterator v_int_iter;
-void	span::addNumber(int elem)
+
+Span::Span(unsigned int n): N(n), vect(0)
 {
-	if (arr.size() == N)
-		throw isFull();
-	else
-		arr.push_back(elem);
 }
 
-int	findRegex(std::vector<int> &arr, str mode, int regex, bool yesRegex)
+Span::Span(const Span &src)
 {
-	v_int_iter i = arr.begin();
-	v_int_iter end = arr.end();
-	int	current = *i;
-	if (current == regex && yesRegex)
+	*this = src;
+}
+
+Span::~Span()
+{}
+
+Span &Span::operator=(const Span &src)
+{
+	if (this == &src)
+		return (*this);
+	N = src.N;
+	vect = src.vect;
+	return (*this);
+}
+
+void Span::addNumber(int n)
+{
+	if (vect.size() == N)
+		throw std::out_of_range("Vector is full");
+	vect.push_back(n);
+}
+
+void Span::addRange(std::vector<int>::iterator begin, std::vector<int>::iterator end)
+{
+	std::vector<int> tmp(begin, end);
+	if (tmp.size() >= (N - vect.size()))
+		throw std::out_of_range("range is too big for the space left");
+	copy(tmp.begin(), tmp.end(), std::back_inserter(vect));
+}
+
+//sort : trie le vector par ordre croissant.
+
+int	Span::shortestSpan() const
+{
+	int res;
+	std::vector<int> tmp = vect;
+	if (vect.size() < 2)
+		throw std::logic_error("Need at least 2 numbers in the vector");
+	sort(tmp.begin(), tmp.end());
+	res = (tmp[1] - tmp[0]);
+	for (std::vector<int>::iterator it = tmp.begin() + 1; it < tmp.end() - 1; it++)
 	{
-		while (i != end && *i == regex)
-			i++;
-		current = *i;
-		if (i == end)
-			return (regex);
+		if (*(it + 1) - *it < res)
+			res = *(it + 1) - *it;
 	}
-	while (i != end)
-	{
-		if ((mode == "short" && *i < current)
-			|| (mode == "long" && *i > current))
-		{
-			if (!yesRegex || (yesRegex && *i != regex))
-				current = *i;
-		}
-		i++;
-	}
-	return (current);
+	return (res);
 }
 
-int	span::shortestSpan(void)
+int	Span::longestSpan() const
 {
-	int first = findRegex(arr, "short", 0, false);
-	int second = findRegex(arr, "short", first, true);
-
-	if (!(arr.size() >= 2))
-		throw isTooShort();
-	if (second == first)
-		throw noSpan();
-	else
-		return (second - first);
-}
-
-int	span::longestSpan(void)
-{
-	int first = findRegex(arr, "long", 0, false);
-	int second = findRegex(arr, "short", 0, false);
-
-	if (!(arr.size() >= 2))
-		throw isTooShort();
-	if (second == first)
-		throw noSpan();
-	else
-		return (first - second);
-	return (0);
+	std::vector<int> tmp = vect;
+	if (vect.size() <= 1)
+		throw std::logic_error("Need at least 2 numbers in the vector");
+	sort(tmp.begin(), tmp.end());
+	return (*(tmp.end() - 1) - *tmp.begin());
 }

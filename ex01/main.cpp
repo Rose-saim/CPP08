@@ -1,45 +1,41 @@
-#include <exception>
-#include <iostream>
-#include <cstdlib>
-#include <sstream>
-#include "./Span.hpp"
-typedef std::string str;
-namespace ft{
-int	stoi(str elem)
+
+#include "Span.hpp"
+
+int randomf()
 {
-	std::stringstream ss;
-	int	ret;
-	ss << elem;
-	ss >> ret;
-	return (ret);
-}
+	return (int)(rand());
 }
 
-int	main(int argc, char **argv)
+int main()
 {
-	if (!(argc >= 2))
-	{
-		std::cerr << "Usage: <numbers . . .>" << std::endl;
-		return (0);
-	}
-	span arr(argc - 1);
-	for (int i = 1; i < argc; i++)
-		arr.addNumber(ft::stoi(static_cast<str>(argv[i])));
-	try{
-		int ret = arr.shortestSpan();
-		std::cout << "shortest Span found: " << ret << std::endl;
-	}
-	catch (const std::exception &e){
-		std::cout << "shortest Span not found" << std::endl;
-		std::cout << "what: " << e.what() << std::endl;
-	}
-	try{
-		int ret2 = arr.longestSpan();
-		std::cout << "longest Span found: " << ret2 << std::endl;
-	}
-	catch (const std::exception &e){
-		std::cout << "longest Span not found" << std::endl;
-		std::cout << "what: " << e.what() << std::endl;
-	}
-	return (0);
+    srand(time(NULL));
+
+    Span sp = Span(5);
+
+    sp.addNumber(6);
+    sp.addNumber(3);
+    sp.addNumber(17);
+    sp.addNumber(9);
+    sp.addNumber(11);
+    std::cout << sp.shortestSpan() << std::endl;
+    std::cout << sp.longestSpan() << std::endl;
+
+    try
+    {
+	    sp.addNumber(8);
+    }
+    catch (std::exception &e)
+    {
+	    std::cerr << e.what() << std::endl;
+    }
+
+    Span sp2(50000);
+	sp2.addNumber(3);
+	std::vector<int> v(40000);
+	std::generate(v.begin(), v.end(), randomf);
+	sp2.addRange(v.begin(), v.end());
+	std::cout << sp2.shortestSpan() << std::endl;
+	std::cout << sp2.longestSpan() << std::endl;
+
+    return 0;
 }

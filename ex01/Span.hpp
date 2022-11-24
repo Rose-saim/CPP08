@@ -1,22 +1,29 @@
 #ifndef SPAN_HPP
-# define SPAN_HPP
-#include <exception>
+#define SPAN_HPP
 #include <vector>
-#include <string>
-class span
-{
-	class isFull : public std::exception { const char	*what() const throw() {return ("is full.");} };
+#include <iostream>
 
-	class isTooShort : public std::exception { const char	*what() const throw() {return ("is too short.");} };
-	class noSpan : public std::exception { const char	*what() const throw() {return ("no span.");} };
+class Span
+{
 	public:
-		span(unsigned int N):N(N) {}
-		~span(void) {}
-		void	addNumber(int elem);
-		int		shortestSpan(void);
-		int		longestSpan(void);
-	private:
+		Span(unsigned int n);
+		Span(const Span &src);
+		~Span();
+
+		Span &operator=(const Span &src);
+	
+		void addNumber(int n);
+		void addRange(std::vector<int>::iterator begin, std::vector<int>::iterator end);
+
+		int shortestSpan() const;
+		int longestSpan() const;
+
+        private:
 		unsigned int N;
-		std::vector<int> arr;
+		unsigned int stored;
+		std::vector<int> vect;
+		Span();
+
 };
-# endif
+
+#endif
